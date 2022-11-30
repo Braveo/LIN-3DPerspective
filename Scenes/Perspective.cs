@@ -12,6 +12,7 @@ public class Perspective : Node2D
     Vector3 surface = new Vector3(0,0,1);
 
     List<Vector3> points = new List<Vector3>();
+    List<Vector3> pointsInitial = new List<Vector3>();
 
 	public override void _Ready()
 	{
@@ -22,6 +23,7 @@ public class Perspective : Node2D
                 for (int z = 0; z < 10; z++) {
 
                     points.Add(new Vector3(x,y,z));
+                    pointsInitial.Add(new Vector3(x,y,z));
 
                 }
 
@@ -33,11 +35,13 @@ public class Perspective : Node2D
 	public override void _Process(float delta)
 	{
 		
-        for (int i = 0; i < points.Count; i++) {
+        // for (int i = 0; i < points.Count; i++) {
 
-            points[i] = points[i] + Vector3.Up * Mathf.Sign(delta) * 10f;
+        //     points[i] = pointsInitial[i] + 
+        //         Vector3.Up * Mathf.Sin(globTime + i) * 0.1f +
+        //         Vector3.Right * Mathf.Sin(globTime + i + 0.2f) * 0.1f;
 
-        }
+        // }
 
         UpdateCamBasis();
         globTime += delta;
@@ -108,6 +112,7 @@ public class Perspective : Node2D
             DrawCircle(proj, 2*dRatio, Colors.White);
 
         }
+
 	}
 
     Basis CamBasis;
