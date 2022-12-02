@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scenes/PerspectiveGPUShader.gdshader" type="Shader" id=1]
+[ext_resource path="res://Scenes/PerspectiveGPU.gd" type="Script" id=2]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 1 )
+shader_param/globPos = Vector3( 0, 0, 0 )
+shader_param/globRot = Vector3( 0, 0, 0 )
+shader_param/surface = Vector3( 0, 0, 1 )
+
+[sub_resource type="SphereMesh" id=2]
+material = SubResource( 1 )
+radius = 0.05
+height = 0.1
+radial_segments = 4
+rings = 1
+
+[sub_resource type="MultiMesh" id=3]
+mesh = SubResource( 2 )
+
+[sub_resource type="Environment" id=4]
+ambient_light_color = Color( 1, 1, 1, 1 )
+ambient_light_sky_contribution = 0.0
+
+[node name="Spatial" type="Spatial"]
+
+[node name="ProjectionGPU" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="MultiMeshInstance" type="MultiMeshInstance" parent="ProjectionGPU"]
+multimesh = SubResource( 3 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 )
+projection = 1
+size = 10.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 4 )

@@ -11,6 +11,8 @@ public class Perspective : Node2D
     Vector3 globRot = Vector3.Zero;
     Vector3 surface = new Vector3(0,0,1);
 
+    Basis CamBasis;
+
     List<Vector3> points = new List<Vector3>();
     List<Vector3> pointsInitial = new List<Vector3>();
 
@@ -44,13 +46,14 @@ public class Perspective : Node2D
         // }
 
         UpdateCamBasis();
+        Basis invBasis = CamBasis.Inverse();
         globTime += delta;
 
         if (!Input.IsActionPressed("p_modifySurface")) {
 
-            globPos += CamBasis.Inverse().x * Input.GetAxis("p_left","p_right") * delta;
-            globPos += CamBasis.Inverse().y * Input.GetAxis("p_above","p_below") * delta;
-            globPos += CamBasis.Inverse().z * Input.GetAxis("p_down","p_up") * delta;
+            globPos += invBasis.x * Input.GetAxis("p_left","p_right") * delta;
+            globPos += invBasis.y * Input.GetAxis("p_above","p_below") * delta;
+            globPos += invBasis.z * Input.GetAxis("p_down","p_up") * delta;
 
         } else {
 
@@ -89,7 +92,7 @@ public class Perspective : Node2D
         if (mEvent != null) {
 
             globRot.y += mEvent.Relative.x * 0.002f;
-            globRot.x += mEvent.Relative.y * 0.002f;
+            globRot.x -= mEvent.Relative.y * 0.002f;
 
         }
 	}
@@ -98,15 +101,15 @@ public class Perspective : Node2D
 	{
 		foreach (Vector3 p in points) {
 
-            Vector3 d = CamBasis.Xform(p - globPos);
+            Vector3 pos = CamBasis.Xform(p - globPos);
             
-            if (d.z < 0) continue;
-            if (d.z > 5) continue;
+            if (pos.z < 0) continue;
+            if (pos.z > 5) continue;
 
-            float dRatio = surface.z/d.z;
+            float dRatio = surface.z/pos.z;
             Vector2 proj = new Vector2(
-                d.x*dRatio+surface.x,
-                d.y*dRatio+surface.y
+                pos.x*dRatio+surface.x,
+                pos.y*dRatio+surface.y
             ) * 128;
 
             DrawCircle(proj, 2*dRatio, Colors.White);
@@ -115,15 +118,12 @@ public class Perspective : Node2D
 
 	}
 
-    Basis CamBasis;
-    float depthRatio;
-
     void UpdateCamBasis() {
 
         Basis camTX = new Basis(
             new Vector3(1,0,0),
-            new Vector3(0,Mathf.Cos(globRot.x),Mathf.Sin(globRot.x)),
-            new Vector3(0,-Mathf.Sin(globRot.x),Mathf.Cos(globRot.x))
+            new Vector3(0,Mathf.Cos(globRot.x),-Mathf.Sin(globRot.x)),
+            new Vector3(0,Mathf.Sin(globRot.x),Mathf.Cos(globRot.x))
         );
         Basis camTY = new Basis(
             new Vector3(Mathf.Cos(globRot.y),0,Mathf.Sin(globRot.y)),
@@ -131,8 +131,8 @@ public class Perspective : Node2D
             new Vector3(-Mathf.Sin(globRot.y),0,Mathf.Cos(globRot.y))
         );
         Basis camTZ = new Basis(
-            new Vector3(Mathf.Cos(globRot.z),-Mathf.Sin(globRot.z),0),
-            new Vector3(Mathf.Sin(globRot.z),Mathf.Cos(globRot.z),0),
+            new Vector3(Mathf.Cos(globRot.z),Mathf.Sin(globRot.z),0),
+            new Vector3(-Mathf.Sin(globRot.z),Mathf.Cos(globRot.z),0),
             new Vector3(0,0,1)
         );
         
@@ -140,4 +140,5 @@ public class Perspective : Node2D
 
     }
     
+
 }
