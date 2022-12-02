@@ -1,6 +1,5 @@
 shader_type spatial;
 
-
 uniform vec3 globPos = vec3(0,0,0);
 uniform vec3 globRot = vec3(0,0,0);
 uniform vec3 surface = vec3(0,0,1);
@@ -32,7 +31,7 @@ void vertex() {
 	
 	vec3 worldPos = (WORLD_MATRIX * vec4(vec3(0,0,0),1.0)).xyz;
 	
-	worldPos = worldPos + vec3(0,1.,0)*sin(TIME + worldPos.y) * 0.1 + vec3(1.,0,0)*sin(TIME + worldPos.y) * 0.1;
+	//worldPos = worldPos + vec3(0,1.,0)*sin(TIME + worldPos.y) * 0.1 + vec3(1.,0,0)*sin(TIME + worldPos.y) * 0.1;
 	
 	pos = GetEulerMatrix()*(worldPos - globPos);
 	float dRatio = surface.z/pos.z;
@@ -40,7 +39,7 @@ void vertex() {
 	
 	if (pos.z < 0.) dRatio = 0.;
 	
-	VERTEX = vec3(proj,0.) - worldPos + VERTEX * dRatio;
+	VERTEX = vec3(proj,0.) - worldPos + vec3(VERTEX.xy,0.) * dRatio;
 	NORMAL = vec3(0.,0.,-1.);
 	
 }

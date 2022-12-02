@@ -11,10 +11,10 @@ shader_param/surface = Vector3( 0, 0, 1 )
 
 [sub_resource type="SphereMesh" id=2]
 material = SubResource( 1 )
-radius = 0.05
-height = 0.1
-radial_segments = 4
-rings = 1
+radius = 0.01
+height = 0.02
+radial_segments = 16
+rings = 8
 
 [sub_resource type="MultiMesh" id=3]
 mesh = SubResource( 2 )
